@@ -1,18 +1,23 @@
-import HeaderBox from '@/components/HeaderBox'
-import PaymentTransferForm from '@/components/PaymentTransferForm'
+import HeaderBox from '@/components/HeaderBox';
+import PaymentTransferForm from '@/components/PaymentTransferForm';
 import { getAccounts } from '@/lib/actions/bank.actions';
 import { getLoggedInUser } from '@/lib/actions/user.actions';
-import React from 'react'
+import { redirect } from "next/navigation";
 
 const Transfer = async () => {
   const loggedIn = await getLoggedInUser();
-  const accounts = await getAccounts({ 
-    userId: loggedIn.$id 
-  })
 
-  if(!accounts) return;
-  
-  const accountsData = accounts?.data;
+  if (!loggedIn) {
+    console.error("User is not logged in.");
+    return redirect("/sign-in");
+  }
+
+  const accounts = await getAccounts({ userId: loggedIn.$id });
+
+  if (!accounts) {
+    console.error("No accounts found.");
+    return;
+  }
 
   return (
     <section className="payment-transfer">
@@ -22,10 +27,10 @@ const Transfer = async () => {
       />
 
       <section className="size-full pt-5">
-        <PaymentTransferForm accounts={accountsData} />
+        <PaymentTransferForm accounts={accounts.data} />
       </section>
     </section>
-  )
-}
+  );
+};
 
-export default Transfer
+export default Transfer;

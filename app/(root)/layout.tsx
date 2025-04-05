@@ -9,11 +9,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const loggedIn = await getLoggedInUser();
 
-
-const loggedIn = await getLoggedInUser();
-
-if(!loggedIn) redirect('/sign-in')
+  if (!loggedIn) {
+    console.error("No session found. Redirecting to sign-in.");
+    return redirect("/sign-in");
+  }
 
   return (
     <main className="flex h-screen w-full font-inter">
@@ -28,9 +29,6 @@ if(!loggedIn) redirect('/sign-in')
         </div>
         {children}
       </div>
-      
     </main>
   );
 }
-
-
